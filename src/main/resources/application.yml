@@ -16,8 +16,12 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
     defer-datasource-initialization: true
   h2.console.enabled: true
-  data.rest:
-      base-path: /api
   data:
     rest:
       return-body-on-create: true
+      base-path: /api
+
+logging:
+  level:
+    root: warn
+    ru.panov: debug

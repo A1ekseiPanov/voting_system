@@ -1,5 +1,6 @@
 package ru.panov.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.domain.Persistable;
@@ -20,11 +21,12 @@ public abstract class AbstractBaseEntity implements Persistable<Integer> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    public long id() {
+    public int id() {
         Assert.notNull(id, "Entity must has id");
         return id;
     }
 
+    @JsonIgnore
     @Override
     public boolean isNew() {
         return id == null;

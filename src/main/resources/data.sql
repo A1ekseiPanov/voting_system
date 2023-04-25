@@ -5,10 +5,9 @@ DROP SEQUENCE IF EXISTS SYSTEM_SEQUENCE_C6FED0E2_3C84_4016_9FA9_05E739003C7B;
 CREATE SEQUENCE SYSTEM_SEQUENCE_C6FED0E2_3C84_4016_9FA9_05E739003C7B START WITH 1;
 
 INSERT INTO USERS (email, name, surname, password)
-VALUES ('admin@ya.ru', 'Вася', 'Петров', 123455);
+VALUES ('user@yan.ru', 'Вася', 'Петров', '{noop}12345');
 
 INSERT INTO USERS (email, name, surname, password)
-VALUES ('user@ya.ru', 'Вас', 'Пров', 54321);
+VALUES ('user@ya.ru', 'Вас', 'Пров', '{noop}54321');
 
-INSERT INTO USER_ROLE (USER_ID, ROLE) VALUES ( 1,'ADMIN');
-INSERT INTO USER_ROLE (USER_ID, ROLE) VALUES ( 2,'USER');
+INSERT INTO USER_ROLE (USER_ID, ROLE) VALUES ( 1,'ROLE_USER'),( 2,'ROLE_USER'),( 2,'ROLE_ADMIN');

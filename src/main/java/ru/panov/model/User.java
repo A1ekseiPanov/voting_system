@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
@@ -14,12 +15,12 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@ToString(callSuper = true,exclude = {"password"})
+@ToString(callSuper = true, exclude = {"password"})
 @Entity
 @Table(name = "users")
-public class User extends AbstractNamedEntity{
+public class User extends AbstractNamedEntity implements Serializable {
     @Column(name = "surname")
-    @Size(max=128)
+    @Size(max = 128)
     private String surname;
     @Size(max = 128)
     @Column(name = "password", nullable = false)
@@ -27,12 +28,12 @@ public class User extends AbstractNamedEntity{
 
     @Email
     @NotBlank
-    @Size(max=128)
+    @Size(max = 128)
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "user_role",joinColumns = @JoinColumn(name = "user_id"))
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
