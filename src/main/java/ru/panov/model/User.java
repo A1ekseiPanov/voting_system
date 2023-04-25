@@ -1,11 +1,14 @@
 package ru.panov.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import ru.panov.util.JsonDeserializers;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -22,8 +25,11 @@ public class User extends AbstractNamedEntity implements Serializable {
     @Column(name = "surname")
     @Size(max = 128)
     private String surname;
+
     @Size(max = 128)
     @Column(name = "password", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonDeserialize(using = JsonDeserializers.PasswordDeserializer.class)
     private String password;
 
     @Email
@@ -41,5 +47,4 @@ public class User extends AbstractNamedEntity implements Serializable {
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()", updatable = false)
     @NotNull
     private Date registered = new Date();
-
 }

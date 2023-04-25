@@ -10,4 +10,4 @@ VALUES ('user@yan.ru', 'Вася', 'Петров', '{noop}12345');
 INSERT INTO USERS (email, name, surname, password)
 VALUES ('user@ya.ru', 'Вас', 'Пров', '{noop}54321');
 
-INSERT INTO USER_ROLE (USER_ID, ROLE) VALUES ( 1,'ROLE_USER'),( 2,'ROLE_USER'),( 2,'ROLE_ADMIN');
+INSERT INTO USER_ROLE (USER_ID, ROLE) VALUES ( 1,'USER'),( 2,'USER'),( 2,'ADMIN');

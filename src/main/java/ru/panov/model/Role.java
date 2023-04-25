@@ -3,8 +3,8 @@ package ru.panov.model;
 import org.springframework.security.core.GrantedAuthority;
 
 public enum Role implements GrantedAuthority {
-    ROLE_ADMIN,
-    ROLE_USER;
+    ADMIN,
+    USER;
 
     @Override
     public String getAuthority() {
