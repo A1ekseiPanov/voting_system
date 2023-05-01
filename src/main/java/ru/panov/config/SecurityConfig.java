@@ -34,7 +34,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    UserDetailsService userDetailsService() {
+    public UserDetailsService userDetailsService() {
         return email -> {
             log.debug("Authenticating '{}'", email);
             Optional<User> optionalUser = repository.findByEmailIgnoreCase(email);
@@ -46,6 +46,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests()
+                .requestMatchers("/api/account/register").anonymous()
                 .requestMatchers("/api/account").hasRole(Role.USER.name())
                 .requestMatchers("/api/**").hasRole(Role.ADMIN.name())
                 .and().httpBasic()

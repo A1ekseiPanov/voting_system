@@ -1,18 +1,17 @@
 package ru.panov.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import ru.panov.util.JsonDeserializers;
+import org.springframework.util.CollectionUtils;
+import ru.panov.HasIdAndEmail;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -21,7 +20,7 @@ import java.util.Set;
 @ToString(callSuper = true, exclude = {"password"})
 @Entity
 @Table(name = "users")
-public class User extends AbstractNamedEntity implements Serializable {
+public class User extends AbstractNamedEntity implements Serializable, HasIdAndEmail {
     @Column(name = "surname")
     @Size(max = 128)
     private String surname;
@@ -29,7 +28,6 @@ public class User extends AbstractNamedEntity implements Serializable {
     @Size(max = 128)
     @Column(name = "password", nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @JsonDeserialize(using = JsonDeserializers.PasswordDeserializer.class)
     private String password;
 
     @Email
@@ -47,4 +45,29 @@ public class User extends AbstractNamedEntity implements Serializable {
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()", updatable = false)
     @NotNull
     private Date registered = new Date();
+
+    public boolean hasRole(Role role) {
+        return roles != null && roles.contains(role);
+    }
+
+    public User(User u) {
+        this(u.id, u.name, u.surname, u.email, u.password, u.registered, u.roles);
+    }
+
+    public User(Integer id, String name, String surname, String email, String password, Role... roles) {
+        this(id, name , surname, email, password, new Date(), Arrays.asList(roles));
+    }
+
+    public User(Integer id, String name, String surname, String email, String password, Date registered, Collection<Role> roles) {
+        super(id, name);
+        this.surname = surname;
+        this.email = email;
+        this.password = password;
+        this.registered = registered;
+        setRoles(roles);
+    }
+
+    public void setRoles(Collection<Role> roles) {
+        this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
+    }
 }

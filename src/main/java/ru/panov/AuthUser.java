@@ -2,11 +2,16 @@ package ru.panov;
 
 import lombok.Getter;
 import org.springframework.lang.NonNull;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import ru.panov.model.Role;
 import ru.panov.model.User;
 
-@Getter
-public class AuthUser extends org.springframework.security.core.userdetails.User {
+import static java.util.Objects.requireNonNull;
 
+
+public class AuthUser extends org.springframework.security.core.userdetails.User {
+    @Getter
     private final User user;
 
     public AuthUser(@NonNull User user) {
@@ -18,5 +23,33 @@ public class AuthUser extends org.springframework.security.core.userdetails.User
         return user.id();
     }
 
+    public static AuthUser safeGet() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return null;
+        }
+        return (auth.getPrincipal() instanceof AuthUser au) ? au : null;
+    }
+
+    public static AuthUser get() {
+        return requireNonNull(safeGet(), "No authorized user found");
+    }
+
+    public static User authUser() {
+        return get().getUser();
+    }
+
+    public static int authId() {
+        return get().id();
+    }
+
+    public boolean hasRole(Role role) {
+        return user.hasRole(role);
+    }
+
+    @Override
+    public String toString() {
+        return "AuthUser:" + user.getId() + '[' + user.getEmail() + ']';
+    }
 }
 

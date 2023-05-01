@@ -1,11 +1,11 @@
 package ru.panov.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.util.ProxyUtils;
 import org.springframework.util.Assert;
+import ru.panov.HasId;
 
 import java.util.Objects;
 
@@ -16,17 +16,16 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-public abstract class AbstractBaseEntity implements Persistable<Integer> {
+public abstract class AbstractBaseEntity implements Persistable<Integer>, HasId {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    protected Integer id;
 
     public int id() {
         Assert.notNull(id, "Entity must has id");
         return id;
     }
 
-    @JsonIgnore
     @Override
     public boolean isNew() {
         return id == null;
