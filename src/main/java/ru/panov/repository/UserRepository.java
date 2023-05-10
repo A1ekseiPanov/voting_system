@@ -1,6 +1,6 @@
 package ru.panov.repository;
 
-import org.springframework.data.rest.core.annotation.RestResource;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 import ru.panov.model.User;
 
@@ -11,7 +11,7 @@ import static ru.panov.config.SecurityConfig.PASSWORD_ENCODER;
 @Transactional(readOnly = true)
 public interface UserRepository extends BaseRepository<User> {
 
-    @RestResource(rel = "by_email", path = "by_email")
+    @Query("SELECT u FROM User u WHERE u.email = LOWER(:email)")
     Optional<User> findByEmailIgnoreCase(String email);
 
     @Transactional

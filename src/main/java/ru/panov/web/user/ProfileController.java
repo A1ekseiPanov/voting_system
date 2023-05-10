@@ -1,7 +1,6 @@
-package ru.panov.web;
+package ru.panov.web.user;
 
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,7 +12,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.panov.AuthUser;
 import ru.panov.model.Role;
 import ru.panov.model.User;
-import ru.panov.repository.UserRepository;
 
 import java.net.URI;
 import java.util.Set;
@@ -22,13 +20,10 @@ import static ru.panov.util.validation.ValidationUtil.assureIdConsistent;
 import static ru.panov.util.validation.ValidationUtil.checkNew;
 
 @RestController
-@RequestMapping(value = AccountController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = ProfileController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-@AllArgsConstructor
-public class AccountController extends AbstractUserController {
-    static final String REST_URL = "/api/account";
-
-    private UserRepository repository;
+public class ProfileController extends AbstractUserController {
+    static final String REST_URL = "/api/profile";
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public User get(@AuthenticationPrincipal AuthUser authUser) {

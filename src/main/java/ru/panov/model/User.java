@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.util.CollectionUtils;
 import ru.panov.HasIdAndEmail;
 
@@ -38,13 +40,19 @@ public class User extends AbstractNamedEntity implements Serializable, HasIdAndE
 
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "role")
+    @Column(name = "role", nullable = false)
     @ElementCollection(fetch = FetchType.EAGER)
+    @JoinColumn
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Role> roles;
 
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()", updatable = false)
     @NotNull
     private Date registered = new Date();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<Vote> vote;
 
     public boolean hasRole(Role role) {
         return roles != null && roles.contains(role);
@@ -55,7 +63,7 @@ public class User extends AbstractNamedEntity implements Serializable, HasIdAndE
     }
 
     public User(Integer id, String name, String surname, String email, String password, Role... roles) {
-        this(id, name , surname, email, password, new Date(), Arrays.asList(roles));
+        this(id, name, surname, email, password, new Date(), Arrays.asList(roles));
     }
 
     public User(Integer id, String name, String surname, String email, String password, Date registered, Collection<Role> roles) {

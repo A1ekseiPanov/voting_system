@@ -46,9 +46,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests()
+                .requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
                 .requestMatchers("/api/account/register").anonymous()
-                .requestMatchers("/api/account").hasRole(Role.USER.name())
-                .requestMatchers("/api/**").hasRole(Role.ADMIN.name())
+                .requestMatchers("/api/**").authenticated()
                 .and().httpBasic()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().csrf().disable();

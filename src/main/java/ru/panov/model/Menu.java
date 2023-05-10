@@ -1,20 +1,33 @@
 package ru.panov.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.LocalDate;
 import java.util.List;
+
 @Entity
-@Table(name = "menu")
-@NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Data
-public class Menu extends AbstractNamedEntity{
-    @OneToOne(mappedBy = "menu")
+@Table(name = "menu", uniqueConstraints = {@UniqueConstraint(name = "UniqueRestaurantIdAndName", columnNames = {"date_create_menu", "restaurant_id"})})
+public class Menu extends AbstractNamedEntity {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private Restaurant restaurant;
 
-    @OneToMany(mappedBy = "menu")
+    @Column(name = "date_create_menu", nullable = false, columnDefinition = "timestamp default now()", updatable = false)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private LocalDate dateCreateMenu = LocalDate.now();
+
+    @OneToMany(mappedBy = "menu", fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Dish> dishes;
 }
