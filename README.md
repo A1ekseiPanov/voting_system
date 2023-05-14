@@ -1,13 +1,11 @@
-# Voting System REST API
-
+ Voting System REST API
 -----------------------------
 Voting system for deciding where to have lunch.
-
 Spring Boot project with registration/authorization and
 role-based access rights (USER, ADMIN). The administrator can
 create/edit/delete a restaurant, menu, dish, and users
 can vote for the restaurant they like depending on the menu.
------------------------------
+
 Stack: [JDK 17](http://jdk.java.net/17/), Spring Boot 3.x, Spring Data JPA,
 Spring Security, Spring Validator, Spring Cache, Lombok, H2, Swagger/Open API 3.0
 
