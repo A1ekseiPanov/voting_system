@@ -1,5 +1,6 @@
 package ru.panov.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.domain.Persistable;
@@ -19,6 +20,7 @@ import java.util.Objects;
 public abstract class AbstractBaseEntity implements Persistable<Integer>, HasId {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     protected Integer id;
 
     public int id() {

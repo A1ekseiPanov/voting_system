@@ -33,6 +33,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.AccessDeniedException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import static ru.panov.error.ErrorType.*;
@@ -70,7 +71,6 @@ public class RestExceptionHandler {
     ProblemDetail bindException(BindException ex, HttpServletRequest request) {
         return processException(ex, request, Map.of("invalid_params", getErrorMap(ex.getBindingResult())));
     }
-
 
     @ExceptionHandler(Exception.class)
     ProblemDetail exception(Exception ex, HttpServletRequest request) {
@@ -115,7 +115,7 @@ public class RestExceptionHandler {
     }
 
     private String getErrorMessage(ObjectError error) {
-        return messageSource.getMessage(error.getCode(), error.getArguments(), error.getDefaultMessage(), LocaleContextHolder.getLocale());
+        return messageSource.getMessage(Objects.requireNonNull(error.getCode()), error.getArguments(), error.getDefaultMessage(), LocaleContextHolder.getLocale());
     }
 
     @NonNull

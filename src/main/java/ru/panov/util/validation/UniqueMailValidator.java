@@ -1,4 +1,4 @@
-package ru.panov.web.user;
+package ru.panov.util.validation;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;

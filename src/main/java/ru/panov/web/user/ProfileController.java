@@ -1,7 +1,10 @@
 package ru.panov.web.user;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +25,12 @@ import static ru.panov.util.validation.ValidationUtil.checkNew;
 @RestController
 @RequestMapping(value = ProfileController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
+@Tag(name = "Profile Controller", description = "Profile Rest Controller")
 public class ProfileController extends AbstractUserController {
     static final String REST_URL = "/api/profile";
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
+    @Operation(summary = "Get auth user")
     public User get(@AuthenticationPrincipal AuthUser authUser) {
         log.info("get {}", authUser);
         return authUser.getUser();
@@ -33,6 +38,8 @@ public class ProfileController extends AbstractUserController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete auth user")
+    @CacheEvict(value = {"users", "admin_users"}, key = "#authUser.username")
     public void delete(@AuthenticationPrincipal AuthUser authUser) {
         log.info("delete {}", authUser);
         super.delete(authUser.id());
@@ -40,6 +47,8 @@ public class ProfileController extends AbstractUserController {
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Register profile")
+    @CacheEvict(value = {"users", "admin_users"},allEntries = true)
     public ResponseEntity<User> register(@Valid @RequestBody User user) {
         log.info("register {}", user);
         checkNew(user);
@@ -54,6 +63,8 @@ public class ProfileController extends AbstractUserController {
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
+    @Operation(summary = "Update auth user")
+    @CacheEvict(value = {"users", "admin_users"}, key = "#authUser.username")
     public void update(@RequestBody @Valid User user, @AuthenticationPrincipal AuthUser authUser) {
         log.info("update {} with id={}", user, authUser.id());
         assureIdConsistent(user, authUser.id());

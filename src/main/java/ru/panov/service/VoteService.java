@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.panov.error.IllegalRequestDataException;
+import ru.panov.error.NotFoundException;
 import ru.panov.model.Restaurant;
 import ru.panov.model.User;
 import ru.panov.model.Vote;
@@ -25,7 +26,7 @@ public class VoteService {
 
     @Transactional
     public void vote(int restaurantId, User user, Vote vote) {
-        Restaurant restaurant = restaurantRepository.getReferenceById(restaurantId);
+        Restaurant restaurant = restaurantRepository.getExisted(restaurantId);
         Optional<Vote> oldVote = voteRepository.findByUserAndDateVote(user, LocalDate.now());
         if (oldVote.isPresent()) {
             if (LocalTime.now().isBefore(transitionTime)) {
@@ -42,5 +43,11 @@ public class VoteService {
             vote.setUser(user);
             voteRepository.save(vote);
         }
+    }
+
+    public void delete(int id, User user) {
+        Vote vote = voteRepository.getVoteByIdAndUser(id, user)
+                .orElseThrow(() -> new NotFoundException("User's vote by id=" + id + " not found"));
+        voteRepository.delete(vote);
     }
 }

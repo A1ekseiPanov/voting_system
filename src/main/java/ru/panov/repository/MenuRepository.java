@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Transactional(readOnly = true)
-public interface MenuRepository extends BaseRepository<Menu>{
-
-    List<Menu> getMenuByRestaurantIdAndDateCreateMenu(int restaurantId, LocalDate localDate);
+public interface MenuRepository extends BaseRepository<Menu> {
+    List<Menu> getMenuByDateCreateMenuAndRestaurantId(LocalDate date, int id);
 }

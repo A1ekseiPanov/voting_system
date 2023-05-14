@@ -9,7 +9,6 @@ import ru.panov.error.NotFoundException;
 
 @NoRepositoryBean
 public interface BaseRepository<T> extends JpaRepository<T, Integer> {
-
     @Transactional
     @Modifying
     @Query("DELETE FROM #{#entityName} e WHERE e.id=:id")
