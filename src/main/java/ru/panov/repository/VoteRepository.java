@@ -10,11 +10,9 @@ import java.util.Optional;
 
 @Transactional(readOnly = true)
 public interface VoteRepository extends BaseRepository<Vote> {
-    Optional<Vote> findByUserAndDateVote(User user, LocalDate localDate);
-
-    Optional<Vote> getVoteByIdAndUser(int id, User user);
+    Optional<Vote> findByIdAndUserAndDateVote(int id, User user, LocalDate localDate);
 
     List<Vote> getAllByUser(User user);
 
-    List<Vote> getAllByRestaurantId(int restaurantId);
+    Optional<Vote> findByUserAndDateVote(User user, LocalDate now);
 }

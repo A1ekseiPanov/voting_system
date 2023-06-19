@@ -21,9 +21,9 @@ public class MenuService {
     private final RestaurantRepository restaurantRepository;
 
     @Transactional
-    public void create(int restaurantId, Menu menu) {
+    public void create(int restaurantId, Menu menu, LocalDate date) {
         Restaurant restaurant = restaurantRepository.getExisted(restaurantId);
-        List<Menu> oldMenu = menuRepository.getMenuByDateCreateMenuAndRestaurantId(LocalDate.now(), restaurant.id());
+        List<Menu> oldMenu = menuRepository.getMenuByOfferDateAndRestaurantId(date, restaurant.id());
         if (oldMenu.isEmpty()) {
             checkNew(menu);
             menu.setRestaurant(restaurant);
@@ -33,11 +33,11 @@ public class MenuService {
         }
     }
 
-    public List<Menu> getAllTodayByRestaurant(int restaurantId) {
-        List<Menu> menuList = menuRepository.getMenuByDateCreateMenuAndRestaurantId(LocalDate.now(),
+    public List<Menu> getMenuByRestaurantIdForToday(int restaurantId) {
+        List<Menu> menuList = menuRepository.getMenuByOfferDateAndRestaurantId(LocalDate.now(),
                 restaurantRepository.getExisted(restaurantId).id());
         if (menuList.isEmpty()) {
-            throw new IllegalRequestDataException("Menu has already been created today");
+            throw new IllegalRequestDataException("Menu at restaurant(id="+ restaurantId +") has already been compiled to date");
         }
         return menuList;
     }

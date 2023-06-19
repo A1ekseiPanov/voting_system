@@ -39,7 +39,7 @@ public class ProfileController extends AbstractUserController {
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete auth user")
-    @CacheEvict(value = {"users", "admin_users"}, key = "#authUser.username")
+    @CacheEvict(value = {"users"}, key = "#authUser.username")
     public void delete(@AuthenticationPrincipal AuthUser authUser) {
         log.info("delete {}", authUser);
         super.delete(authUser.id());
@@ -48,7 +48,7 @@ public class ProfileController extends AbstractUserController {
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Register profile")
-    @CacheEvict(value = {"users", "admin_users"},allEntries = true)
+    @CacheEvict(value = {"users"},allEntries = true)
     public ResponseEntity<User> register(@Valid @RequestBody User user) {
         log.info("register {}", user);
         checkNew(user);
@@ -64,7 +64,7 @@ public class ProfileController extends AbstractUserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
     @Operation(summary = "Update auth user")
-    @CacheEvict(value = {"users", "admin_users"}, key = "#authUser.username")
+    @CacheEvict(value = {"users"}, key = "#authUser.username")
     public void update(@RequestBody @Valid User user, @AuthenticationPrincipal AuthUser authUser) {
         log.info("update {} with id={}", user, authUser.id());
         assureIdConsistent(user, authUser.id());

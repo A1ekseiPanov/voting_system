@@ -22,7 +22,7 @@ import java.util.*;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@ToString(callSuper = true, exclude = {"password"})
+@ToString(callSuper = true, exclude = {"password","vote"})
 @Entity
 @Table(name = "users")
 public class User extends AbstractNamedEntity implements Serializable, HasIdAndEmail {

@@ -12,8 +12,9 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString(callSuper = true, exclude = {"user","restaurant"})
 @Table(name = "vote", uniqueConstraints = {@UniqueConstraint
-        (name = "UniqueUserIdAndDateTimeVote", columnNames = {"user_id", "date_vote"})})
+        (name = "unique_index_vote_userId_dateVote", columnNames = {"user_id", "date_vote"})})
 public class Vote extends AbstractBaseEntity implements HasId {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

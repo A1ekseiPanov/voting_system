@@ -15,7 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 
-import static ru.panov.util.TimeUtil.transitionTime;
+import static ru.panov.util.TimeUtil.TRANSITION_TIME;
 import static ru.panov.util.validation.ValidationUtil.checkNew;
 
 @Service
@@ -25,29 +25,34 @@ public class VoteService {
     private final VoteRepository voteRepository;
 
     @Transactional
-    public void vote(int restaurantId, User user, Vote vote) {
+    public void create(int restaurantId, User user, Vote vote) {
         Restaurant restaurant = restaurantRepository.getExisted(restaurantId);
         Optional<Vote> oldVote = voteRepository.findByUserAndDateVote(user, LocalDate.now());
+        if (oldVote.isEmpty()) {
+            checkNew(vote);
+            vote.setRestaurant(restaurant);
+            vote.setUser(user);
+            voteRepository.save(vote);
+        } else {
+            throw new IllegalRequestDataException("You can only vote once a day");
+        }
+    }
+
+    @Transactional
+    public void update(int id, int restaurantId, User user, Vote vote) {
+        Restaurant restaurant = restaurantRepository.getExisted(restaurantId);
+        Optional<Vote> oldVote = voteRepository.findByIdAndUserAndDateVote(id, user, LocalDate.now());
         if (oldVote.isPresent()) {
-            if (LocalTime.now().isBefore(transitionTime)) {
+            if (LocalTime.now().isBefore(TRANSITION_TIME)) {
                 vote.setId(oldVote.get().getId());
                 vote.setRestaurant(restaurant);
                 vote.setUser(user);
                 voteRepository.save(vote);
             } else {
-                throw new IllegalRequestDataException("Vote change time expired at 11:00 AM");
+                throw new IllegalRequestDataException("Vote change time expired at " + TRANSITION_TIME);
             }
         } else {
-            checkNew(vote);
-            vote.setRestaurant(restaurant);
-            vote.setUser(user);
-            voteRepository.save(vote);
+            throw new NotFoundException("Vote not found");
         }
-    }
-
-    public void delete(int id, User user) {
-        Vote vote = voteRepository.getVoteByIdAndUser(id, user)
-                .orElseThrow(() -> new NotFoundException("User's vote by id=" + id + " not found"));
-        voteRepository.delete(vote);
     }
 }

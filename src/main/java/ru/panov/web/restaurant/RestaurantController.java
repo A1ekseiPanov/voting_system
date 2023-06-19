@@ -16,6 +16,7 @@ import ru.panov.model.Restaurant;
 import ru.panov.repository.RestaurantRepository;
 import ru.panov.service.MenuService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -30,11 +31,11 @@ public class RestaurantController {
     private final MenuService menuService;
 
     @GetMapping
-    @Operation(summary = "Get all restaurants")
+    @Operation(summary = "Get all restaurants and menu today")
     @Cacheable("restaurants")
     public List<Restaurant> getAll() {
         log.info("get all restaurants");
-        return restaurantRepository.findAll();
+        return restaurantRepository.getAllRestaurantAndMenu(LocalDate.now());
     }
 
     @GetMapping("/{id}/menus")
@@ -42,6 +43,13 @@ public class RestaurantController {
     @Cacheable("all_menus")
     public List<Menu> getTodayMenus(@Parameter(description = "restaurant_id") @PathVariable int id) {
         log.info("get menu by restaurant id={}", id);
-        return menuService.getAllTodayByRestaurant(id);
+        return menuService.getMenuByRestaurantIdForToday(id);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get restaurant by id")
+    public Restaurant getOne(@PathVariable int id) {
+        log.info("get restaurant by id={}", id);
+        return restaurantRepository.getExisted(id);
     }
 }

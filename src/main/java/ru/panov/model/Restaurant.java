@@ -18,6 +18,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString(callSuper = true, exclude = {"menu","vote"})
 @Table(name = "restaurant")
 public class Restaurant extends AbstractBaseEntity implements HasId {
     @Column(name = "name", nullable = false, unique = true)
@@ -30,9 +31,9 @@ public class Restaurant extends AbstractBaseEntity implements HasId {
     @Size(min = 2, max = 120)
     private String description;
 
-    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "restaurant", fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<Menu> menu;
 
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)

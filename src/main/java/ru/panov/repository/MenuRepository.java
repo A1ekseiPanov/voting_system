@@ -8,5 +8,5 @@ import java.util.List;
 
 @Transactional(readOnly = true)
 public interface MenuRepository extends BaseRepository<Menu> {
-    List<Menu> getMenuByDateCreateMenuAndRestaurantId(LocalDate date, int id);
+    List<Menu> getMenuByOfferDateAndRestaurantId(LocalDate date, int id);
 }

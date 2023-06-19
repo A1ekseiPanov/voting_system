@@ -16,8 +16,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString(callSuper = true, exclude = {"restaurant"})
 @Table(name = "menu", uniqueConstraints = {@UniqueConstraint
-        (name = "UniqueRestaurantIdAndName", columnNames = {"date_create_menu", "restaurant_id"})})
+        (name = "unique_index_menu_restaurantId_name", columnNames = {"offer_date", "restaurant_id"})})
 public class Menu extends AbstractNamedEntity implements HasId {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
@@ -25,10 +26,9 @@ public class Menu extends AbstractNamedEntity implements HasId {
     @JsonIgnore
     private Restaurant restaurant;
 
-    @Column(name = "date_create_menu", nullable = false,
-            columnDefinition = "date default now()", updatable = false)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private LocalDate dateCreateMenu = LocalDate.now();
+    @Column(name = "offer_date", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private LocalDate offerDate;
 
     @OneToMany(mappedBy = "menu", fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
